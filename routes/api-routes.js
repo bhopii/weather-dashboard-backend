@@ -17,15 +17,15 @@ const appRoutes = (app) => {
         .indexOf(city.toUpperCase()) === -1
     ) {
       database.cities.push(city);
-      res.status(201).send({ status: `${city} is added to the list` });
+      res.status(201).send({ serverStatus: `${city} is added to the list` });
     } else {
-      res.status(200).send({ status: `${city} already present` });
+      res.status(409).send({ serverStatus: `${city} already present` });
     }
   });
 
   app.delete("/api/cities", (req, res) => {
     database.cities = [];
-    res.status(200).send({ status: "Recent searches cleaned" });
+    res.status(200).send({ serverStatus: "Recent searches cleaned" });
   });
 
   app.get("/api/weather/:city", async (req, res) => {
@@ -42,9 +42,9 @@ const appRoutes = (app) => {
           `https://api.openweathermap.org/data/2.5/onecall?lat=${latt}&lon=${longt}&exclude=minutely,hourly,alerts&appid=d8cebcf8331bd9f62eee21d496dc4a09&units=imperial`
         )
       ).data;
-      res.status(200).send({ current, daily });
+      res.status(200).send({ current : {...current, city}, daily });
     } else {
-      res.status(501).send({ status: "Weather data not found for the city" });
+      res.status(501).send({ serverStatus: "Weather data not found for the city" });
     }
   });
 };
